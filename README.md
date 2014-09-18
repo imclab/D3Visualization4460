@@ -17,3 +17,9 @@ REQUIREMENTS:
 * One effective visualization
 * Use at least three (3) interaction techniques (filter, group, brush, sort, animate, DoD, etc.)
 * If bugs exist document the issue with a resolution
+
+Inspiration:
+
+http://vudlab.com/simpsons/
+http://www.informationisbeautiful.net/
+http://setosa.io/#/
