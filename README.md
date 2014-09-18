@@ -21,5 +21,7 @@ REQUIREMENTS:
 Inspiration:
 
 http://vudlab.com/simpsons/
+
 http://www.informationisbeautiful.net/
+
 http://setosa.io/#/
