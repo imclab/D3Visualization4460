@@ -1,119 +1,112 @@
 <!DOCTYPE html>
+
 <html lang="en">
-
-
     <head>
         <meta charset="utf-8">
-        <title>D3 Test</title>
+        <title>D3 Practice Run</title>
         <script type="text/javascript" src="d3/d3.js"></script>
-
-        <style>
-            .chart rect {
-              fill: steelblue;
+        <style type="text/css">
+            /*svg specific attributes for class pumpkin*/
+            .pumpkin{
+                fill: orange;
+                stroke: black;
+                stroke-width: 5;
             }
 
-            .chart text {
-              fill: white;
-              font: 10px sans-serif;
-              text-anchor: middle;
-            }
-
-             text.xText{
-              fill: black;
-              font: 10px sans-serif;
-              text-anchor: middle;
-            }
-        </style>
 
 
+            </style>
     </head>
-
-
     <body>
-        <svg class="chart"></svg>
-        <script type="text/javascript"> //src = d3/d3.js?
+        <h1>
+            Aligned Left Tutorial Test Run
+        </h1>
 
-            //##############    1    ####################
-            //Setting the size of our canvas
-            var width = 780; 
-            var height = 460; 
+        <img id= "lol" src="lol.jpg" width="240" height="180">
 
-            //Setting our x and y axes
-            //RangeRoundBands returns the band width. Decimal value is the padding
-            //Range provides the band height (because of the inverted values).
-            var x = d3.scale.ordinal().rangeRoundBands([0, width], .1);
-            var y = d3.scale.linear().range([height, 0]);
+        <canvas id= "myCanvas" width = "300" height = "200" style = "border:1px solid #000000;">
+        </canvas>
 
-            //Creating our chart and grabbing attributes from ".chart" in header
-            var chart = d3.select(".chart")
-                .attr("width", width)
-                .attr("height", height);
+        <svg x = 500 width = "500" height = "100">
+            <text x="0" y="50" fill="yellow" stroke="black" stroke-width=1.2 font-family="Helvetica">
+            Iris Visualization
+            </text>
+
+            <circle cx="75" cy="25" r="20" fill="rgba(0, 255, 0, 0.5)"/>
+            <circle cx="100" cy="45" r="20" fill="rgba(255, 255, 0, 0.25)"/>
+            <circle cx="125" cy="65" r="20" fill="rgba(255, 0, 0, 0.1)"/>
+
+            <circle cx="25" cy="25" r="20"
+                    fill="rgba(128, 0, 128, 0.75)" 
+                    stroke="rgba(0, 255, 0, 0.25)" stroke-width="10"/>
+            <circle cx="65" cy="45" r="20"
+                    fill="rgba(128, 0, 128, 0.75)" 
+                    stroke="rgba(0, 255, 0, 0.25)" stroke-width="10"
+                    opacity="0.5"/>
+            <circle cx="105" cy="65" r="20"
+                    fill="rgba(128, 0, 128, 0.75)" 
+                    stroke="rgba(0, 255, 0, 0.25)" stroke-width="10"
+                    opacity="0.2"/>
+        </svg>
+
+        <script type="text/javascript">
+
+          //test object
+          var noob = {
+            kind: "worst",
+            color: "ugly",
+            quantity: "infinity",
+            tasty: true
+          };
+
+          //write into our canvas
+          var c = document.getElementById("myCanvas");
+          var ctx = c.getContext("2d");
+
+          //create a gradient
+          var grd = ctx.createLinearGradient(0,0,200,0);
+          grd.addColorStop(0,"green");
+          grd.addColorStop(1,"white");
+
+          ctx.fillStyle = grd;
+          ctx.font = "30px Helvetica";
+          ctx.fillText(noob.quantity + noob.color,10,50);
+
+          var img = document.getElementById("lol");
+          ctx.drawImage(img, 10, 10);
+
+          // Width and Height
+          var w = 500;
+          var h = 100;
+
+          //data
+          var dataset = [5, 10, 15, 20, 25];
+
+          //SVG Element
+          var svg = d3.select("body")
+          .append("svg")
+          .attr("width", w)
+          .attr("height", h);
+
+          var circles = svg.selectAll("circle")
+          .data(dataset)
+          .enter()
+          .append("circle");
+
+          circles.attr("cx", function(d,i){
+            return (i*50) + 25;
+          })
+          .attr("cy", h/2)
+          .attr("r", function(d){
+            return d;
+          })
+          .attr("fill", "green")
+          .attr("stroke", "purple")
+          .attr("stroke-width", function(d){
+            return d/2;
+          });
 
 
-
-            //##############    2    ####################
-            //Pulling data from .json file 
-            d3.json("iris.json", function(error, data){
-
-                //Set our scale domains
-                //data.map creates a new array with the result of a function of every element in the array
-                x.domain(data.map(function(d) { return d.state; }));
-                y.domain([0, d3.max(data, function(d) { return d.value; })]);
-
-                var y_translate =  50;
-
-
-
-                //##############    3    ####################
-                //Grabbing data and binding it to the bars
-                //"G" groups all the svg elements together
-                var bar = chart.selectAll("g")
-                  .data(data)
-                  .enter()
-                  .append("g")
-                  .attr("transform", function(d) { return "translate("+ x(d.state) +",0)"; });
-
-                //Logging data to the console so we can make sure the data is bound
-                console.log(data);
-
-
-
-                //##############    4    ####################
-                //Generating rectangle SVG elements for our data
-                bar.append("rect")
-                  .attr("y", function(d) { return y(d.value); })
-                  .attr("height", function(d) { return height - y_translate - y(d.value); })
-                  .attr("width", x.rangeBand())
-
-                  .style("fill", function(d){
-                    if(d.value > 30){
-                      return "#00CC33";
-                    }
-                    else{
-                      return "steelblue";
-                    }
-                  });
-
-
-
-                //##############    5    ####################
-                //Adding y labels to our bars
-                bar.append("text")
-                  .attr("x", x.rangeBand() / 2)
-                  .attr("y", function(d) { return y(d.value) + 3; })
-                  .attr("dy", ".75em")
-                  .text(function(d) { return d.value; });
-
-                //Adding x labels to our bars
-                bar.append("text")
-                  .attr("class", "xText")
-                  .attr("x", x.rangeBand() / 2)
-                  .attr("y", height - y_translate + 5)
-                  .attr("dy", ".75em")
-                  .text(function(d) { return d.state; });
-
-            });
-            
 
         </script>
     </body>
