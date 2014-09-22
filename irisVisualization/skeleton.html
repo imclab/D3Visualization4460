@@ -1,113 +1,30 @@
 <!DOCTYPE html>
-
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>D3 Practice Run</title>
-        <script type="text/javascript" src="d3/d3.js"></script>
-        <style type="text/css">
-            /*svg specific attributes for class pumpkin*/
-            .pumpkin{
-                fill: orange;
-                stroke: black;
-                stroke-width: 5;
-            }
-
-
-
-            </style>
-    </head>
-    <body>
-        <h1>
-            Aligned Left Tutorial Test Run
-        </h1>
-
-        <img id= "lol" src="lol.jpg" width="240" height="180">
-
-        <canvas id= "myCanvas" width = "300" height = "200" style = "border:1px solid #000000;">
-        </canvas>
-
-        <svg x = 500 width = "500" height = "100">
-            <text x="0" y="50" fill="yellow" stroke="black" stroke-width=1.2 font-family="Helvetica">
-            Iris Visualization
-            </text>
-
-            <circle cx="75" cy="25" r="20" fill="rgba(0, 255, 0, 0.5)"/>
-            <circle cx="100" cy="45" r="20" fill="rgba(255, 255, 0, 0.25)"/>
-            <circle cx="125" cy="65" r="20" fill="rgba(255, 0, 0, 0.1)"/>
-
-            <circle cx="25" cy="25" r="20"
-                    fill="rgba(128, 0, 128, 0.75)" 
-                    stroke="rgba(0, 255, 0, 0.25)" stroke-width="10"/>
-            <circle cx="65" cy="45" r="20"
-                    fill="rgba(128, 0, 128, 0.75)" 
-                    stroke="rgba(0, 255, 0, 0.25)" stroke-width="10"
-                    opacity="0.5"/>
-            <circle cx="105" cy="65" r="20"
-                    fill="rgba(128, 0, 128, 0.75)" 
-                    stroke="rgba(0, 255, 0, 0.25)" stroke-width="10"
-                    opacity="0.2"/>
-        </svg>
-
-        <script type="text/javascript">
-
-          //test object
-          var noob = {
-            kind: "worst",
-            color: "ugly",
-            quantity: "infinity",
-            tasty: true
-          };
-
-          //write into our canvas
-          var c = document.getElementById("myCanvas");
-          var ctx = c.getContext("2d");
-
-          //create a gradient
-          var grd = ctx.createLinearGradient(0,0,200,0);
-          grd.addColorStop(0,"green");
-          grd.addColorStop(1,"white");
-
-          ctx.fillStyle = grd;
-          ctx.font = "30px Helvetica";
-          ctx.fillText(noob.quantity + noob.color,10,50);
-
-          var img = document.getElementById("lol");
-          ctx.drawImage(img, 10, 10);
-
-          // Width and Height
-          var w = 500;
-          var h = 100;
-
-          //data
-          var dataset = [5, 10, 15, 20, 25];
-
-          //SVG Element
-          var svg = d3.select("body")
-          .append("svg")
-          .attr("width", w)
-          .attr("height", h);
-
-          var circles = svg.selectAll("circle")
-          .data(dataset)
-          .enter()
-          .append("circle");
-
-          circles.attr("cx", function(d,i){
-            return (i*50) + 25;
-          })
-          .attr("cy", h/2)
-          .attr("r", function(d){
-            return d;
-          })
-          .attr("fill", "green")
-          .attr("stroke", "purple")
-          .attr("stroke-width", function(d){
-            return d/2;
-          });
-
-
-
-        </script>
-    </body>
-</html>
+ 
+<style>
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #eee;
+    shape-rendering: crispEdges;
+}
+ 
+.axis text {
+    font-family: "Helvetica Neue";
+    font-size: 11px;
+}
+ 
+.loading {
+    font-family: "Helvetica Neue";
+    font-size: 15px;
+}
+ 
+.circle {
+    fill: #222;
+}
+</style>
+ 
+ 
+<div id="iris"></div>
+ 
+<script src="d3/d3.js"></script>
+<script src="scatter.js"></script>
