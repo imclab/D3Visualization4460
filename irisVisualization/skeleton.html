@@ -1,30 +1,75 @@
 <!DOCTYPE html>
- 
+<html>
+<head>
+	<title>Iris Viz</title>
+	
+</head>
 <style>
-.axis path,
-.axis line {
-    fill: none;
-    stroke: #eee;
-    shape-rendering: crispEdges;
-}
- 
-.axis text {
-    font-family: "Helvetica Neue";
-    font-size: 11px;
-}
- 
-.loading {
-    font-family: "Helvetica Neue";
-    font-size: 15px;
-}
- 
-.circle {
-    fill: #222;
-}
+	body {
+		font: 11px sans-serif;
+	}
+	h1{
+		font-family: "Helvetica Neue";
+		font-size: 40px;
+	}
+	.axis path,
+	.axis line {
+		fill: none;
+		stroke: #eee;
+		shape-rendering: crispEdges;
+	}
+	 
+	.axis text {
+		font-family: "Helvetica Neue";
+		font-size: 11px;
+	}
+	 
+	.loading {
+		font-family: "Helvetica Neue";
+		font-size: 15px;
+	}
+	 
+	.circle {
+		fill: #222;
+	}
 </style>
- 
- 
-<div id="iris"></div>
- 
+<body>
 <script src="d3/d3.js"></script>
-<script src="scatter.js"></script>
+
+<h1 align="center">Iris Visualization</h1>
+<div id="iris"></div>
+<script>
+
+	var margins = {
+        "left": 40,
+            "right": 30,
+            "top": 30,
+            "bottom": 30
+    };
+    
+    var width = 500;
+    var height = 500
+	var svg = d3.select("#scatter-load").append("svg").attr("width", width).attr("height", height).append("g")
+        .attr("transform", "translate(" + margins.left + "," + margins.top + ")");
+		
+	var x = d3.scale.linear()
+        .range([0, width - margins.left - margins.right]);
+	
+	var y = d3.scale.linear()
+        .range([height - margins.top - margins.bottom, 0]);
+
+	
+	svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + y.range()[0] + ")");
+    svg.append("g").attr("class", "y axis");
+	
+	var xAxis = d3.svg.axis().scale(x).orient("bottom").tickPadding(2);
+    var yAxis = d3.svg.axis().scale(y).orient("left").tickPadding(2);
+		
+	svg.selectAll("g.y.axis").call(yAxis);
+    svg.selectAll("g.x.axis").call(xAxis);
+</script>
+</body>
+</html>
+	
+	
+	
