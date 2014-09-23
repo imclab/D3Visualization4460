@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>Iris Viz</title>
+		<title>Iris Vizualization</title>
 		<script type="text/javascript" src="d3/d3.js"></script>
 		<style>
 			body {
@@ -12,6 +12,10 @@
 			h1{
 				font-family: "Helvetica Neue";
 				font-size: 40px;
+			}
+			h2{
+				font-family:"Helvetica Neue";
+				font-size: 20px;
 			}
 			.axis path,
 			.axis line {
@@ -44,7 +48,9 @@
 	<body>
 
 		<h1 align="center">Iris Visualization</h1>
+		<h2 align="center">By: Justin Luk and Rebecca Norton </h2>
 
+		<svg class="chart"> </svg>
 		<script type="text/javascript">
 			var margins = {"left": 40,"right": 30,"top": 30,"bottom": 30};
 			var width = 700;
@@ -109,6 +115,15 @@
 			svg.append("g").attr("transform", "translate(" + padding + ",0)").attr("class", "axis").call(yAxis);
 			
 
+
+			 var chart = d3.select(".chart")
+                .attr("width", width)
+                .attr("height", height);
+			//Load iris data
+
+			 d3.json("iris.json", function(error, data){
+			 	alert(data.length);
+			 });
 			
 		</script>
 	</body>
