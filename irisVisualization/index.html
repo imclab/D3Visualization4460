@@ -2,9 +2,9 @@
 <meta charset="utf-8">
 
 <head>
+  <title>4460 D3 Info Viz</title>
   <style>
 
-  <title> 4460 D3 Info Viz < /title>
   body {
     font: 10px helvetica;
   }
@@ -20,149 +20,46 @@
     stroke: #000;
   }
 
-  #sddm
-{ margin: 0;
-  padding: 0;
-  z-index: 30}
-
-#sddm li
-{ margin: 0;
-  padding: 0;
-  list-style: none;
-  float: left;
-  font: bold 11px arial}
-
-#sddm li a
-{ display: block;
-  margin: 0 1px 0 0;
-  padding: 4px 10px;
-  width: 60px;
-  background: #5970B2;
-  color: #FFF;
-  text-align: center;
-  text-decoration: none}
-
-#sddm li a:hover
-{ background: #49A3FF}
-
-#sddm div
-{ position: absolute;
-  visibility: hidden;
-  margin: 0;
-  padding: 0;
-  background: #EAEBD8;
-  border: 1px solid #5970B2}
-
-  #sddm div a
-  { position: relative;
-    display: block;
-    margin: 0;
-    padding: 5px 10px;
-    width: auto;
-    white-space: nowrap;
-    text-align: left;
-    text-decoration: none;
-    background: #EAEBD8;
-    color: #2875DE;
-    font: 11px arial}
-
-  #sddm div a:hover
-  { background: #49A3FF;
-    color: #FFF}
-
   </style>
 </head>
 
 <body>
-
+ 
   <h1 align="center">Iris Visualization</h1>
   <h2 align="center">By: Justin Luk and Rebecca Norton </h2>
 
-  <ul id="sddm">
-    <li><a href="#" 
-        onmouseover="mopen('m1')" 
-        onmouseout="mclosetime()">X Axis</a>
-        <div id="m1" 
-            onmouseover="mcancelclosetime()" 
-            onmouseout="mclosetime()">
-        <a href="#">Sepal Length</a>
-        <a href="#">Sepal Width</a>
-        <a href="#">Petal Length</a>
-        <a href="#">Petal Width</a>
-        </div>
-    </li>
-    <li><a href="#" 
-        onmouseover="mopen('m2')" 
-        onmouseout="mclosetime()">Y Axis</a>
-        <div id="m2" 
-            onmouseover="mcancelclosetime()" 
-            onmouseout="mclosetime()">
-        <a href="#">Sepal Length</a>
-        <a href="#">Sepal Width</a>
-        <a href="#">Petal Length</a>
-        <a href="#">Petal Width</a>
-        </div>
-    </li>
-</ul>
-
-<div style="clear:both"></div>
-
-
+  <form>
+    Select your Y Axis:
+    <select id="myY" onchange="chooseY()">
+      <option>Sepal Width</option>
+      <option>Sepal Length</option>
+      <option>Petal Width</option>
+      <option>Petal Length</option>
+    </select>
+  <form>
+    Select your X Axis:
+    <select id="myX" onchange="chooseX()">
+      <option>Sepal Width</option>
+      <option>Sepal Length</option>
+      <option>Petal Width</option>
+      <option>Petal Length</option>
+    </select>
 
 
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script>
 
-  // Copyright 2006-2007 javascript-array.com
-  // add functionality for dropdown menus
-
-  var timeout = 500;
-  var closetimer  = 0;
-  var ddmenuitem  = 0;
-
-  // open hidden layer
-  function mopen(id)
-  { 
-    // cancel close timer
-    mcancelclosetime();
-
-    // close old layer
-    if(ddmenuitem) ddmenuitem.style.visibility = 'hidden';
-
-    // get new layer and show it
-    ddmenuitem = document.getElementById(id);
-    ddmenuitem.style.visibility = 'visible';
-
-  }
-  // close showed layer
-  function mclose()
-  {
-    if(ddmenuitem) ddmenuitem.style.visibility = 'hidden';
+  function chooseY(){
+    var myY = document.getElementById("myY");
   }
 
-  // go close timer
-  function mclosetime()
-  {
-    closetimer = window.setTimeout(mclose, timeout);
+  function chooseX(){
+    var myY = document.getElementById("myX");
   }
-
-  // cancel close timer
-  function mcancelclosetime()
-  {
-    if(closetimer)
-    {
-      window.clearTimeout(closetimer);
-      closetimer = null;
-    }
-  }
-
-  // close layer when click-out
-  document.onclick = mclose; 
-
-
 
   //Inspiration taken from http://bl.ocks.org/mbostock/3887118
   //Draw our graph and feed the .json iris file
+
   var margin = {top: 20, right: 20, bottom: 30, left: 40},
       width = 960 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom;
@@ -174,6 +71,9 @@
       .range([height, 0]);
 
   var color = d3.scale.ordinal().range(['#7fffd4', '#f6546a', '#899dbe']);
+
+  var ylabel = document.getElementById("myY").value;
+  var xlabel = document.getElementById("myX").value;
 
   var xAxis = d3.svg.axis()
       .scale(x)
@@ -196,9 +96,17 @@
 
    d3.json("iris.json", function(error, data){
 
-    x.domain(d3.extent(data, function(d) { return d.SepalWidth; })).nice();
-    y.domain(d3.extent(data, function(d) { return d.SepalLength; })).nice();
+    x.domain(d3.extent(data, function(d) { 
+      return d.SepalWidth; }
 
+    )).nice();
+
+    y.domain(d3.extent(data, function(d) { 
+      return d.SepalLength; }
+
+    )).nice();
+
+<<<<<<< HEAD
 	svg.selectAll(".dot")
         .data(data)
       .enter().append("circle")
@@ -224,6 +132,9 @@
 				.duration(500)
 				.style("opacity", 0);});
 	
+=======
+    //create the x axis
+>>>>>>> 39b7e4d4aef99534eeb35c62512e6ea77692e42d
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
@@ -233,8 +144,9 @@
         .attr("x", width)
         .attr("y", -6)
         .style("text-anchor", "end")
-        .text("Sepal Width (cm)");
+        .text( xlabel + " (cm)");
 
+    //create the y axis
     svg.append("g")
         .attr("class", "y axis")
         .call(yAxis)
@@ -244,13 +156,32 @@
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Sepal Length (cm)")
+        .text( ylabel + " (cm)")
 
+<<<<<<< HEAD
+=======
+    //draw all of our circles
+    svg.selectAll(".dot")
+        .data(data)
+      .enter().append("circle")
+        .attr("class", "dot")
+        .attr("r", 3.5)
+        .attr("cx", function(d) { return x(d.SepalWidth); })
+        .attr("cy", function(d) { return y(d.SepalLength); })
+        .style("fill", function(d) { return color(d.Species); });
+>>>>>>> 39b7e4d4aef99534eeb35c62512e6ea77692e42d
 
+    //draw our legend
     var legend = svg.selectAll(".legend")
         .data(color.domain())
       .enter().append("g")
         .attr("class", "legend")
+        .on("mouseover", function() {
+          d3.select(this)
+          .attr('fill', 'red'); })
+        .on("mouseout", function() {
+          d3.select(this)
+          .attr('fill', 'black'); })
         .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
     legend.append("rect")
