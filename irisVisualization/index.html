@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+<html lang="en">
 <meta charset="utf-8">
+
 
 <head>
   <title>4460 D3 Info Viz</title>
@@ -45,7 +47,8 @@
 
   <script>
 
-  //Inspiration taken from https://gist.github.com/jfreels/6871643/
+  //Inspiration taken from mblocks
+  //Code reused from https://gist.github.com/jfreels/6871643/
 
   var color = d3.scale.ordinal().range(['#19DFFF', '#FFE300', '#CC146B']);
 	  
@@ -115,25 +118,26 @@
           ])
         .range([h,0]);
   
-    //OUR SVG
-    var svg = d3.select("body").append("svg")
-        .attr("width", w + margin.left + margin.right)
-        .attr("height", h + margin.top + margin.bottom)
-      .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    //X-Axis
-    var xAxis = d3.svg.axis()
-      .scale(xScale)
-      .tickFormat(formatPercent)
-      .ticks(5)
-      .orient('bottom');
-    // Y-axis
-    var yAxis = d3.svg.axis()
-      .scale(yScale)
-      .tickFormat(formatPercent)
-      .ticks(5)
-      .orient('left');
+      //OUR SVG
+      var svg = d3.select("body").append("svg")
+          .attr("width", w + margin.left + margin.right)
+          .attr("height", h + margin.top + margin.bottom)
+        .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      //X-Axis
+      var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .tickFormat(formatPercent)
+        .ticks(5)
+        .orient('bottom');
+      // Y-axis
+      var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .tickFormat(formatPercent)
+        .ticks(5)
+        .orient('left');
 
+<<<<<<< HEAD
   svg.selectAll(".dot")
         .data(data)
         .enter()
@@ -172,19 +176,62 @@
         .attr("y", -6)
         .style("text-anchor", "end")
         .text("SepalWidth");
+=======
+    svg.selectAll(".dot")
+          .data(data)
+          .enter()
+          .append("circle")
+          .attr("class", "dot")
+          .attr("r", 4.5)
+          .attr('stroke-width',1)
+          .attr("cx", function(d) { return xScale(d['SepalWidth']); })
+          .attr("cy", function(d) { return yScale(d['SepalWidth']); })
+          .style("fill", function(d) { return color(d['Species']); })
+          .on("mouseover", function(d) {
+            d3.select(this)
+              .attr("r", 10);
+            div.transition()        
+              .duration(200)      
+              .style("opacity", .9);
+      			div.html(d['Species'] + "<br/>" + xScale(d['SepalWidth']) + ", " + yScale(d['SepalWidth']))
+      				.style("left", 100 + "px")     
+      				.style("top", 100 + "px")})
+      		.on("mouseout", function() {
+      			d3.select(this)
+      				.attr("r", 5);
+      			div.transition()
+      				.duration(500)
+      				.style("opacity", 0);});
+  	
+      //create the x axis
+      svg.append("g")
+          .attr("class", "axis")
+          .attr("id","xAxis")
+          .attr("transform", "translate(0," + h + ")")
+          .call(xAxis)
+          .append("text")
+        .attr('id','xAxisLabel')
+          .attr("x", w)
+          .attr("y", -10)
+          .style("text-anchor", "end")
+          .text("SepalWidth");
+>>>>>>> origin/master
 
-    //create the y axis
-    svg.append("g")
-        .attr("class", "y axis")
-        .call(yAxis)
-      .append("text")
-      .attr('id','yAxisLabel')
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end")
-        .text("SepalWidth");
+      //create the y axis
+      svg.append("g")
+          .attr("class", "axis")
+          .attr("id", "yAxis")
+          .call(yAxis)
+        .append("text")
+        .attr('id','yAxisLabel')
+          .attr("transform", "rotate(-90)")
+          .attr("y", 6)
+          .attr("x",0)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text("SepalWidth");
 
+<<<<<<< HEAD
     //UPDATE DATA AND AXIS *****************************************
     function yChange() {
       var value = this.value // get the new y value
@@ -234,34 +281,93 @@
       .enter().append("g")
         .attr("class", "legend")
         .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+=======
+      //UPDATE DATA AND AXIS *****************************************
+      function yChange() {
+        var value = this.value // get the new y value
+        yScale // change the yScale
+          .domain([
+            d3.min([0,d3.min(data,function (d) { return d[value] })]),
+            d3.max([0,d3.max(data,function (d) { return d[value] })])
+            ])
+        yAxis.scale(yScale) // change the yScale
+        d3.select('#yAxis') // redraw the yAxis
+          .transition().duration(1000)
+          .call(yAxis)
+        d3.select('#yAxisLabel') // change the yAxisLabel
+          .text(value)    
+        d3.selectAll('circle') // move the circles
+          .transition().duration(1000)
+          .delay(function (d,i) { return i*100})
+            .attr('cy',function (d) { return yScale(d[value]) })
+      }
+     
+      function xChange() {
+        var value = this.value // get the new x value
+        xScale // change the xScale
+          .domain([
+            d3.min([0,d3.min(data,function (d) { return d[value] })]),
+            d3.max([0,d3.max(data,function (d) { return d[value] })])
+            ])
+        xAxis.scale(xScale) // change the xScale
+        d3.select('#xAxis') // redraw the xAxis
+          .transition().duration(1000)
+          .call(xAxis)
+        d3.select('#xAxisLabel') // change the xAxisLabel
+          .transition().duration(1000)
+          .text(value)
+        d3.selectAll('circle') // move the circles
+          .transition().duration(1000)
+          .delay(function (d,i) { return i*100})
+            .attr('cx',function (d) { return xScale(d[value]) })
+      }
 
-    legend.append("rect")
-        .attr("x", w + 30)
-        .attr("width", 18)
-        .attr("height", 18)
-        .style("fill", color);
+      //draw our legend
+      var legend = svg.selectAll(".legend")
+          .data(color.domain())
+        .enter().append("g")
+          .attr("class", "legend")
+          .on("mouseover", function() {
+            d3.select(this)
+            .attr('fill', color.domain()); })
+          .on("mouseout", function() {
+            d3.select(this)
+            .attr('fill', 'black'); })
+          .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+>>>>>>> origin/master
 
-    legend.append("text")
-        .attr("x", w + 24)
-        .attr("y", 9)
-        .attr("dy", ".35em")
-        .style("text-anchor", "end")
-        .text(function(d) { return d; })
-		.on("mouseover", function (d) {//filtering
-			d3.select(this)
-			.attr('fill', color);
-			svg.selectAll(".dot")
-			.data(color(d.Species))
-			.attr("r", 10);})
-		.on("mouseout", function(d) {
-			d3.select(this)
-			.attr('fill', 'black');
-			svg.selectAll(".dot")
-			.data(color(d.Species))
-			.attr("r", 5);});
+      legend.append("rect")
+          .attr("x", w + 30)
+          .attr("width", 18)
+          .attr("height", 18)
+          .style("fill", color);
+
+      legend.append("text")
+          .attr("x", w + 24)
+          .attr("y", 9)
+          .attr("dy", ".35em")
+          .style("text-anchor", "end")
+          .text(function(d) { return d; })
+  		.on("mouseover", function (d) {//filtering
+  			d3.select(this)
+  			.attr('fill', color);
+  			svg.selectAll(".dot")
+  			.data(color(d.Species))
+  			.attr("r", 10);})
+  		.on("mouseout", function(d) {
+  			d3.select(this)
+  			.attr('fill', 'black');
+  			svg.selectAll(".dot")
+  			.data(color(d.Species))
+  			.attr("r", 5);});
 
   });
 
   </script>
+<<<<<<< HEAD
   </body>
   </html>
+=======
+</body>
+</html>
+>>>>>>> origin/master
