@@ -30,89 +30,18 @@
 				font-size: 15px;
 			}
 			 
-			.setosa {
-				fill: #222;
+			.circle {
+				fill: #7fffd4;
 			}
-			.versicolor{
-				fill: #111;
+			.tooltip {
+				position: absolute;
+				width: 200px;
+				height: 28px;
+				pointer-events: none;
 			}
-			.virginica {
-				fill: #212;
+
 			}
 		</style>
 	</head>
 	<body>
-
-		<h1 align="center">Iris Visualization</h1>
-
-		<script type="text/javascript">
-			var margins = {"left": 40,"right": 30,"top": 30,"bottom": 30};
-			var width = 700;
-			var height = 700;
-			var padding = 50;
-			
-			var svg = d3.select("body")
-				.append("svg")
-				.attr("width", width)
-				.attr("height", height);
-				
-			var xScale = d3.scale.linear()
-                     .domain([0, 5])
-                     .range([padding, width-padding]);
-			var yScale = d3.scale.linear()
-                     .domain([5, 0])
-                     .range([padding, height-padding]);
-			
-			var xAxis = d3.svg.axis().scale(xScale)
-                  .orient("bottom");
-				  
-			var yAxis = d3.svg.axis()
-                  .scale(yScale)
-                  .orient("left");
-				  
-			
-		
-			var setosa = svg.append('text').text('Setosa')
-                .attr('x', width - padding)
-                .attr('y', 150)
-                .attr('fill', 'black')
-				.on("mouseover", function() {
-					d3.select(this)
-					.attr('fill', 'red'); })
-				.on("mouseout", function() {
-					d3.select(this)
-					.attr('fill', 'black'); });
-			var versicolor = svg.append('text').text('Versicolor')
-                .attr('x', width - padding)
-                .attr('y', 200)
-                .attr('fill', 'black')
-				.on("mouseover", function() {
-					d3.select(this)
-					.attr('fill', 'red'); })
-				.on("mouseout", function() {
-					d3.select(this)
-					.attr('fill', 'black'); });
-			var text = svg.append('text').text('Virginica')
-                .attr('x', width - padding)
-                .attr('y', 250)
-                .attr('fill', 'black')
-				.on("mouseover", function() {
-					d3.select(this)
-					.attr('fill', 'red'); })
-				.on("mouseout", function() {
-					d3.select(this)
-					.attr('fill', 'black'); });
-				
-				  
-			svg.append("g").attr("class", "axis").attr("transform", "translate(0," + (height - padding) + ")").call(xAxis);
-			
-			svg.append("g").attr("transform", "translate(" + padding + ",0)").attr("class", "axis").call(yAxis);
-			
-
-			
-		</script>
-	</body>
 </html>
-	
-	
-	
