@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8">
+
+
+<head>
+  <title>4460 D3 Info Viz</title>
+  <style>
+
+  body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    position: relative;
+    width: 960px;
+    //color: white;
+  }
+
+  .axis path,
+  .axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+
+  .dot {
+    stroke: #000;
+  }
+
+  .dot:hover {
+    stroke-width: 3px;
+  }
+
+  label{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  </style>
+</head>
+
+<body background = 'minimal-trees.jpg'>
+  
+  <h1 align="center">Iris Visualization</h1>
+  <h2 align="center">By: Justin Luk and Rebecca Norton </h2>
+
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+
+  <script>
+
+  //Inspiration taken from mblocks
+  //Code reused from https://gist.github.com/jfreels/6871643/
+
+  var color = d3.scale.ordinal().range(['#19DFFF', '#FFE300', '#CC146B']);
+	  
+  var div = d3.select("body").append("div")   
+	  .attr("class", "tooltip")               
+	  .style("opacity", 0);
+
+  d3.json("iris.json", function(error, data){
+
+    // JSON selection
+    var body = d3.select("body");
+    var selectData = [{ "text" : "SepalWidth"},
+                      { "text" : "SepalLength"},
+                      { "text" : "PetalLength"},
+                      { "text" : "PetalWidth"},
+                     ];
+
+    // Select X-axis Variable
+    var span = body.append('span')
+      .text('Select X-Axis: ')
+    var yInput = body.append('select')
+        .attr('id','xSelect')
+        .on('change',xChange)
+      .selectAll('option')
+        .data(selectData)
+        .enter()
+      .append('option')
+        .attr('value', function (d) { return d.text })
+        .text(function (d) { return d.text ;})
+    body.append('br');
+   
+    // Select Y-axis Variable
+    var span = body.append('span')
+        .text('Select Y-Axis: ')
+    var yInput = body.append('select')
+        .attr('id','ySelect')
+        .on('change',yChange)
+      .selectAll('option')
+        .data(selectData)
+        .enter()
+      .append('option')
+        .attr('value', function (d) { return d.text })
+        .text(function (d) { return d.text ;})
+    body.append('br');
+
+      // Variables
+      var body = d3.select('body')
+      var margin = { top: 50, right: 50, bottom: 50, left: 50 }
+      var h = 700 - margin.top - margin.bottom
+      var w = 700 - margin.left - margin.right
+      var formatPercent = d3.format('1')
+
+      // Scales
+      var xScale = d3.scale.linear()
+        .domain([
+          d3.min([0,d3.min(data,function (d) { return d['SepalWidth'] })]),
+          d3.max([0,d3.max(data,function (d) { return d['SepalWidth'] })])
+          ])
+        .range([0,w])
+      var yScale = d3.scale.linear()
+        .domain([
+          d3.min([0,d3.min(data,function (d) { return d['SepalWidth'] })]),
+          d3.max([0,d3.max(data,function (d) { return d['SepalWidth'] })])
+          ])
+        .range([h,0]);
+  
+      //OUR SVG
+      var svg = d3.select("body").append("svg")
+          .attr("width", w + margin.left + margin.right)
+          .attr("height", h + margin.top + margin.bottom)
+        .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      //X-Axis
+      var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .tickFormat(formatPercent)
+        .ticks(5)
+        .orient('bottom');
+      // Y-axis
+      var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .tickFormat(formatPercent)
+        .ticks(5)
+        .orient('left');
+
+    svg.selectAll(".dot")
+          .data(data)
+          .enter()
+          .append("circle")
+          .attr("class", "dot")
+          .attr("r", 4.5)
+          .attr('stroke-width',1)
+          .attr("cx", function(d) { return xScale(d['SepalWidth']); })
+          .attr("cy", function(d) { return yScale(d['SepalWidth']); })
+          .style("fill", function(d) { return color(d['Species']); })
+          .on("mouseover", function(d) {
+            d3.select(this)
+              .attr("r", 10);
+            div.transition()        
+              .duration(200)      
+              .style("opacity", .9);
+      			div.html(d['Species'] + "<br/>" + xScale(d['SepalWidth']) + ", " + yScale(d['SepalWidth']))
+      				.style("left", 100 + "px")     
+      				.style("top", 100 + "px")})
+      		.on("mouseout", function() {
+      			d3.select(this)
+      				.attr("r", 5);
+      			div.transition()
+      				.duration(500)
+      				.style("opacity", 0);});
+  	
+      //create the x axis
+      svg.append("g")
+          .attr("class", "axis")
+          .attr("id","xAxis")
+          .attr("transform", "translate(0," + h + ")")
+          .call(xAxis)
+          .append("text")
+        .attr('id','xAxisLabel')
+          .attr("x", w)
+          .attr("y", -10)
+          .style("text-anchor", "end")
+          .text("SepalWidth");
+
+      //create the y axis
+      svg.append("g")
+          .attr("class", "axis")
+          .attr("id", "yAxis")
+          .call(yAxis)
+        .append("text")
+        .attr('id','yAxisLabel')
+          .attr("transform", "rotate(-90)")
+          .attr("y", 6)
+          .attr("x",0)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text("SepalWidth");
+
+      //UPDATE DATA AND AXIS *****************************************
+      function yChange() {
+        var value = this.value // get the new y value
+        yScale // change the yScale
+          .domain([
+            d3.min([0,d3.min(data,function (d) { return d[value] })]),
+            d3.max([0,d3.max(data,function (d) { return d[value] })])
+            ])
+        yAxis.scale(yScale) // change the yScale
+        d3.select('#yAxis') // redraw the yAxis
+          .transition().duration(1000)
+          .call(yAxis)
+        d3.select('#yAxisLabel') // change the yAxisLabel
+          .text(value)    
+        d3.selectAll('circle') // move the circles
+          .transition().duration(1000)
+          .delay(function (d,i) { return i*100})
+            .attr('cy',function (d) { return yScale(d[value]) })
+      }
+     
+      function xChange() {
+        var value = this.value // get the new x value
+        xScale // change the xScale
+          .domain([
+            d3.min([0,d3.min(data,function (d) { return d[value] })]),
+            d3.max([0,d3.max(data,function (d) { return d[value] })])
+            ])
+        xAxis.scale(xScale) // change the xScale
+        d3.select('#xAxis') // redraw the xAxis
+          .transition().duration(1000)
+          .call(xAxis)
+        d3.select('#xAxisLabel') // change the xAxisLabel
+          .transition().duration(1000)
+          .text(value)
+        d3.selectAll('circle') // move the circles
+          .transition().duration(1000)
+          .delay(function (d,i) { return i*100})
+            .attr('cx',function (d) { return xScale(d[value]) })
+      }
+
+      //draw our legend
+      var legend = svg.selectAll(".legend")
+          .data(color.domain())
+        .enter().append("g")
+          .attr("class", "legend")
+          .on("mouseover", function() {
+            d3.select(this)
+            .attr('fill', color.domain()); })
+          .on("mouseout", function() {
+            d3.select(this)
+            .attr('fill', 'black'); })
+          .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+      legend.append("rect")
+          .attr("x", w + 30)
+          .attr("width", 18)
+          .attr("height", 18)
+          .style("fill", color);
+
+      legend.append("text")
+          .attr("x", w + 24)
+          .attr("y", 9)
+          .attr("dy", ".35em")
+          .style("text-anchor", "end")
+          .text(function(d) { return d; })
+  		.on("mouseover", function (d) {//filtering
+  			d3.select(this)
+  			.attr('fill', color);
+  			svg.selectAll(".dot")
+  			.data(color(d.Species))
+  			.attr("r", 10);})
+  		.on("mouseout", function(d) {
+  			d3.select(this)
+  			.attr('fill', 'black');
+  			svg.selectAll(".dot")
+  			.data(color(d.Species))
+  			.attr("r", 5);});
+
+  });
+
+  </script>
+</body>
+</html>
