@@ -173,7 +173,7 @@
   var y = d3.scale.linear()
       .range([height, 0]);
 
-  var color = d3.scale.category10();
+  var color = d3.scale.ordinal().range(['#7fffd4', '#f6546a', '#899dbe']);
 
   var xAxis = d3.svg.axis()
       .scale(x)
@@ -182,6 +182,11 @@
   var yAxis = d3.svg.axis()
       .scale(y)
       .orient("left");
+	  
+  var div = d3.select("body").append("div")   
+	  .attr("class", "tooltip")               
+	  .style("opacity", 0);
+				
 
   var svg = d3.select("body").append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -194,6 +199,31 @@
     x.domain(d3.extent(data, function(d) { return d.SepalWidth; })).nice();
     y.domain(d3.extent(data, function(d) { return d.SepalLength; })).nice();
 
+	svg.selectAll(".dot")
+        .data(data)
+      .enter().append("circle")
+        .attr("class", "dot")
+        .attr("r", 3.5)
+        .attr("cx", function(d) { return x(d.SepalWidth); })
+        .attr("cy", function(d) { return y(d.SepalLength); })
+        .style("fill", function(d) { return color(d.Species); })
+		.on("mouseover", function(d) {
+			d3.select(this)
+				.attr("r", 10);
+			div.transition()        
+				.duration(200)      
+				.style("opacity", .9); 
+  
+			div.html(d.Species + "<br/>" + x(d.SepalWidth) + ", " + y(d.SepalLength))
+				.style("left", 100 + "px")     
+				.style("top", 100 + "px")})
+		.on("mouseout", function() {
+			d3.select(this)
+				.attr("r", 5);
+			div.transition()
+				.duration(500)
+				.style("opacity", 0);});
+	
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
@@ -216,14 +246,6 @@
         .style("text-anchor", "end")
         .text("Sepal Length (cm)")
 
-    svg.selectAll(".dot")
-        .data(data)
-      .enter().append("circle")
-        .attr("class", "dot")
-        .attr("r", 3.5)
-        .attr("cx", function(d) { return x(d.SepalWidth); })
-        .attr("cy", function(d) { return y(d.SepalLength); })
-        .style("fill", function(d) { return color(d.Species); });
 
     var legend = svg.selectAll(".legend")
         .data(color.domain())
@@ -242,7 +264,19 @@
         .attr("y", 9)
         .attr("dy", ".35em")
         .style("text-anchor", "end")
-        .text(function(d) { return d; });
+        .text(function(d) { return d; })
+		.on("mouseover", function (d) {//filtering
+			d3.select(this)
+			.attr('fill', color);
+			svg.selectAll(".dot")
+			.data(color(d.Species))
+			.attr("r", 10);})
+		.on("mouseout", function(d) {
+			d3.select(this)
+			.attr('fill', 'black');
+			svg.selectAll(".dot")
+			.data(color(d.Species))
+			.attr("r", 5);});
 
   });
 
