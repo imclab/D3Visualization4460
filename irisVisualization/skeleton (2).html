@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+		<title>Iris Vizualization</title>
+		<script type="text/javascript" src="d3/d3.js"></script>
+		<style>
+			body {
+				font: 11px sans-serif;
+			}
+			h1{
+				font-family: "Helvetica Neue";
+				font-size: 40px;
+			}
+			h2{
+				font-family:"Helvetica Neue";
+				font-size: 20px;
+			}
+			.axis path,
+			.axis line {
+				fill: none;
+				stroke: black;
+				shape-rendering: crispEdges;
+			}
+			 
+			.axis text {
+				font-family: "Helvetica Neue";
+				font-size: 11px;
+			}
+			 
+			.loading {
+				font-family: "Helvetica Neue";
+				font-size: 15px;
+			}
+			 
+			.circle {
+				fill: #7fffd4;
+			}
+			.tooltip {
+				position: absolute;
+				width: 200px;
+				height: 28px;
+				pointer-events: none;
+			}
+
+			}
+		</style>
+	</head>
+	<body>
+<<<<<<< HEAD
+</html>
+=======
+
+		<h1 align="center">Iris Visualization</h1>
+		<h2 align="center">By: Justin Luk and Rebecca Norton </h2>
+
+		<script type="text/javascript">
+
+			//static size variables
+
+			var margins = {"left": 40,"right": 30,"top": 30,"bottom": 30};
+			var width = 700;
+			var height = 700;
+			var padding = 50;
+			
+			var svg = d3.select("body")
+				.append("svg")
+				.attr("width", width)
+				.attr("height", height);
+			
+			//draw scales onto svg
+			var xScale = d3.scale.linear()
+                     .domain([0, 5])
+                     .range([padding, width-padding]);
+			var yScale = d3.scale.linear()
+                     .domain([5, 0])
+                     .range([padding, height-padding]);
+			
+			var xAxis = d3.svg.axis().scale(xScale)
+                  .orient("bottom");
+				  
+			var yAxis = d3.svg.axis()
+                  .scale(yScale)
+                  .orient("left");
+				  
+			
+			//Labels for types of flowers
+
+			var setosa = svg.append('text').text('Setosa')
+                .attr('x', width - padding)
+                .attr('y', 150)
+                .attr('fill', 'black')
+				.on("mouseover", function() {
+					d3.select(this)
+					.attr('fill', 'red'); })
+				.on("mouseout", function() {
+					d3.select(this)
+					.attr('fill', 'black'); });
+			var versicolor = svg.append('text').text('Versicolor')
+                .attr('x', width - padding)
+                .attr('y', 200)
+                .attr('fill', 'black')
+				.on("mouseover", function() {
+					d3.select(this)
+					.attr('fill', 'red'); })
+				.on("mouseout", function() {
+					d3.select(this)
+					.attr('fill', 'black'); });
+			var text = svg.append('text').text('Virginica')
+                .attr('x', width - padding)
+                .attr('y', 250)
+                .attr('fill', 'black')
+				.on("mouseover", function() {
+					d3.select(this)
+					.attr('fill', 'red'); })
+				.on("mouseout", function() {
+					d3.select(this)
+					.attr('fill', 'black'); });
+				
+				  
+			svg.append("g").attr("class", "axis").attr("transform", "translate(0," + (height - padding) + ")").call(xAxis);
+			
+			svg.append("g").attr("transform", "translate(" + padding + ",0)").attr("class", "axis").call(yAxis);
+            
+            //read the data, store them in global variables
+
+            var data;
+            var xAxisName;
+            var yAxisName;
+            d3.json("iris.json", function (json) {
+                console.log("I read " + json.data.length + " data points.");
+                console.log(json.data);
+                data = json.data;
+                visualize(data); //then start the visualization
+                
+            });
+            
+            function visualize(data)
+            {
+                 //dimensions of the chart
+                 var w = 720;
+                 var h = 640;
+                 //empty area between last element and chart borders
+                 var padding = 20;
+                 
+                 //the format of the data
+                 var format = d3.format(".0");
+                 
+                 //will use this one below
+                 function getX(d) {
+                     return d.SepalLength;
+                 };
+                 
+                function getY(d) {
+                     return d.SepalWidth;
+                 };
+                 
+                //the scales
+                var xScale = d3.scale.linear()
+                                                .domain([d3.min(data, getX), d3.max(data, getX)])
+                                                .range([padding, w - padding]);
+                var yScale = d3.scale.linear()
+                                            .domain([d3.min(data, getY), d3.max(data, getY)])
+                                            .range([h - padding, padding]);
+            
+                //the axes
+                var xAxis = d3.svg.axis()
+                                        .scale(xScale)
+                                        .orient("bottom")
+                                        .ticks(3)
+                                        .tickFormat(format);
+                                        
+                var yAxis = d3.svg.axis()
+                                        .scale(yScale)
+                                        .orient("left")
+                                        .ticks(3)
+                                        .tickFormat(format);
+            
+            
+            
+              //the svg chart!
+              var svg = d3.select("body")
+                                        .append("svg")
+                                        .attr("width", w)
+                                        .attr("height", h);
+                                        
+            
+                
+                //create the points of the scatterplot
+                //well, they are svg circles
+                 svg.selectAll("circle")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("cx", function(d) { return xScale(d.x);})
+                .attr("cy", function(d) { return yScale(d.y);})
+                .attr("r", 5) //arbitrary. big enough? scale automatically?
+                .attr("x", getX)
+                .attr("x", getY)
+                .attr("class","circle")
+                .append("svg:title")
+                .text(function (d) {return "(" + d.x + "," + d.y + ")";});
+            
+            
+                //create the axes, too
+                svg.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", "translate(0," + (h - padding) + ")")
+                    .call(xAxis);
+			
+                svg.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", "translate(" + padding + ",0)")
+                    .call(yAxis);
+                
+            
+            }
+			
+		</script>
+	</body>
+</html>
+	
+	
+	
+>>>>>>> origin/master

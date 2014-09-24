@@ -49,7 +49,7 @@
 
   var color = d3.scale.ordinal().range(['#19DFFF', '#FFE300', '#CC146B']);
 	  
-  var div = d3.select("body").append("div")   
+  var div = d3.select("body").append("body")   
 	  .attr("class", "tooltip")               
 	  .style("opacity", 0);
 
@@ -62,6 +62,9 @@
                       { "text" : "PetalLength"},
                       { "text" : "PetalWidth"},
                      ];
+					 
+	var selectDataX = "SepalWidth",
+		selectDataY = "SepalWidth";
 
     // Select X-axis Variable
     var span = body.append('span')
@@ -96,7 +99,7 @@
       var margin = { top: 50, right: 50, bottom: 50, left: 50 }
       var h = 700 - margin.top - margin.bottom
       var w = 700 - margin.left - margin.right
-      var formatPercent = d3.format('.2')
+      var formatPercent = d3.format('1')
 
       // Scales
       var xScale = d3.scale.linear()
@@ -138,8 +141,8 @@
         .attr("class", "dot")
         .attr("r", 4.5)
         .attr('stroke-width',1)
-        .attr("cx", function(d) { return xScale(d['SepalWidth']); })
-        .attr("cy", function(d) { return yScale(d['SepalWidth']); })
+        .attr("cx", function(d) { return d[selectDataX]; })
+        .attr("cy", function(d) { return d[selectDataY]; })
         .style("fill", function(d) { return color(d['Species']); })
         .on("mouseover", function(d) {
           d3.select(this)
@@ -147,15 +150,16 @@
           div.transition()        
             .duration(200)      
             .style("opacity", .9);
-    			div.html(d['Species'] + "<br/>" + xScale(d['SepalWidth']) + ", " + yScale(d['SepalWidth']))
-    				.style("left", 100 + "px")     
-    				.style("top", 100 + "px")})
+    			div.html(d['Species'] + "<br/>" + d[selectDataX] + ", " + d[selectDataY])
+    				.style("left", d3.event.pageX  + "px")     
+    				.style("top", d3.event.pageY - 150 + "px")})
     		.on("mouseout", function() {
     			d3.select(this)
     				.attr("r", 5);
     			div.transition()
     				.duration(500)
     				.style("opacity", 0);});
+					
 	
     //create the x axis
     svg.append("g")
@@ -184,6 +188,8 @@
     //UPDATE DATA AND AXIS *****************************************
     function yChange() {
       var value = this.value // get the new y value
+	  selectDataY = value;
+	  console.log(value);
       yScale // change the yScale
         .domain([
           d3.min([0,d3.min(data,function (d) { return d[value] })]),
@@ -203,6 +209,7 @@
    
     function xChange() {
       var value = this.value // get the new x value
+	  selectDataX = value;
       xScale // change the xScale
         .domain([
           d3.min([0,d3.min(data,function (d) { return d[value] })]),
@@ -226,12 +233,6 @@
         .data(color.domain())
       .enter().append("g")
         .attr("class", "legend")
-        .on("mouseover", function() {
-          d3.select(this)
-          .attr('fill', color.domain()); })
-        .on("mouseout", function() {
-          d3.select(this)
-          .attr('fill', 'black'); })
         .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
     legend.append("rect")
@@ -262,3 +263,5 @@
   });
 
   </script>
+  </body>
+  </html>
